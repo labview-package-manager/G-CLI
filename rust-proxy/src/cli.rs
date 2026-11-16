@@ -22,6 +22,8 @@ pub struct Configuration {
     pub allow_dialogs: bool,
     /// Dont launch anything if this is true.
     pub no_launch: bool,
+    /// LabVIEW configuration file to launch LabVIEW with (passed as `-pref`).
+    pub lv_ini: Option<PathBuf>,
 }
 
 impl Configuration {
@@ -76,6 +78,7 @@ impl Configuration {
             },
             allow_dialogs: args.get_flag("allow dialogs"),
             no_launch: args.get_flag("no launch"),
+            lv_ini: args.get_one::<PathBuf>("labview ini").cloned(),
         }
     }
 }
@@ -142,6 +145,13 @@ fn clap_app() -> clap::Command {
             .long("no-launch")
                 .action(ArgAction::SetTrue)
             .help("Don't launch your VI or application automatically. You must start it manually.")
+        )
+        .arg(
+            Arg::new("labview ini")
+                .long("lv-ini")
+                .env("G_CLI_LV_INI")
+                .value_parser(value_parser!(PathBuf))
+                .help("LabVIEW configuration file to launch LabVIEW with, passed to LabVIEW as -pref. Can also be set with the G_CLI_LV_INI environment variable. Not used when running an executable."),
         )
         .trailing_var_arg(true)
         .arg(Arg::new("app to run").action(ArgAction::Append).required(true))
@@ -277,6 +287,37 @@ mod tests {
         let config = Configuration::from_arg_array(args);
 
         assert_eq!(config.no_launch, true);
+    }
+
+    #[test]
+    fn lv_ini_default() {
+        let args = vec![
+            String::from("g-cli"),
+            String::from("test.vi"),
+            String::from("--"),
+            String::from("test1"),
+        ];
+
+        let config = Configuration::from_arg_array(args);
+
+        assert_eq!(config.lv_ini, None);
+    }
+
+    #[test]
+    fn lv_ini_set() {
+        let args = vec![
+            String::from("g-cli"),
+            String::from("--lv-ini"),
+            String::from("config/LabVIEW.ini"),
+            String::from("test.vi"),
+            String::from("--"),
+            String::from("test1"),
+        ];
+
+        let config = Configuration::from_arg_array(args);
+
+        assert_eq!(config.lv_ini, Some(PathBuf::from("config/LabVIEW.ini")));
+        assert_eq!(config.to_launch, PathBuf::from("test.vi"));
     }
 
     #[test]

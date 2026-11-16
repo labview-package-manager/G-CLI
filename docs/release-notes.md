@@ -5,6 +5,7 @@
 ### New Features
 
 * You can programmatically flush the output buffer from LabVIEW.
+* `--lv-ini <path>` (or the `G_CLI_LV_INI` environment variable) launches LabVIEW with a specific configuration file, passed to LabVIEW as `-pref`.
 
 ## v3.0.1
 

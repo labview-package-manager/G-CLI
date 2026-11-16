@@ -150,6 +150,7 @@ fn launch_process(
                 launch_path,
                 app_listener.port(),
                 config.allow_dialogs,
+                config.lv_ini.as_deref(),
             )
             .wrap_err("Failed to Launch LabVIEW")
         }
@@ -169,6 +170,7 @@ fn launch_process(
                 launch_path,
                 app_listener.port(),
                 config.allow_dialogs,
+                config.lv_ini.as_deref(),
             )
             .wrap_err("Failed to launch LabVIEW")
         }

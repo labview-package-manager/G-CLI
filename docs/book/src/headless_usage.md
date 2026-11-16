@@ -19,6 +19,18 @@ The best recommendation is to check the $? variable such as:
 
 Some tools, such as Gitlab, insert these automatically after your commands (see https://docs.gitlab.com/runner/shells/)
 
+## Using a Specific LabVIEW Configuration File
+
+By default LabVIEW starts with its own `LabVIEW.ini`. To launch it with a different configuration file, for example to give a build agent its own VI Server port or object cache, pass `--lv-ini`:
+
+`g-cli --lv-ini C:\build\LabVIEW.ini my_tool.vi -- --flag`
+
+G-CLI passes the file to LabVIEW as `-pref <path>`. A relative path is resolved against the current directory.
+
+You can set the `G_CLI_LV_INI` environment variable instead, so that existing scripts calling `g-cli` use the file without changes. `--lv-ini` takes priority over the environment variable.
+
+LabVIEW reads the configuration file only when it starts. If a LabVIEW instance is already running, it may handle the request with its own configuration instead, unless the configuration file sets `AllowMultipleInstances=True`. The option has no effect when the target is an executable.
+
 ## Avoiding LabVIEW Dialogs
 
 LabVIEW dialogs will halt a headless system and make it appear to hang - resulting in a connection timeout error.

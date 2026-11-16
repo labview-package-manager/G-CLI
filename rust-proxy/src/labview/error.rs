@@ -11,6 +11,8 @@ pub enum LabVIEWError {
     ProcessLaunchFailed(#[source] std::io::Error),
     #[error("VI to launch does not exist: \"{0}\"")]
     ViDoesNotExist(PathBuf),
+    #[error("LabVIEW configuration file does not exist: \"{0}\"")]
+    IniDoesNotExist(PathBuf),
     #[error("Nul characters in argument isn't allowed")]
     NullCharInArgument,
 }
